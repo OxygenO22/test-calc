@@ -3,6 +3,8 @@ import s from './Calculator.module.scss'
 import axios from "axios";
 import { MySelect } from '../ui/select/MySelect';
 import { MyCommonSelect } from '../ui/select/MyCommonSelect';
+import { MyInput } from '../ui/input/MyInput';
+import { CartItem } from '../ui/cartItem/CartItem';
 
 export type Data = {
   id: string;
@@ -192,10 +194,11 @@ export const Calculator = () => {
 
   if (getCurrentPipePrice && pipePrice && pipeTotalLength) {
     const [price] = getCurrentPipePrice;
-    price ? (pipeTotalPrice = +pipeTotalLength * +pipePrice) : "нет данных";
+    price
+      ? (pipeTotalPrice = (+pipeTotalLength * +pipePrice).toFixed(2))
+      : "нет данных";
   }
-
-
+  
 
   const getFixPrice = getFixList
     ?.map((item) => item.price);
@@ -207,11 +210,13 @@ export const Calculator = () => {
 
   if (getCurrentPipePrice && fixPrice && fixValueOnSquare) {
     const [price] = getCurrentPipePrice;
-    price ? (fixTotalPrice = +fixValueOnSquare * +fixPrice) : "нет данных";
+    price
+      ? (fixTotalPrice = (+fixValueOnSquare * +fixPrice).toFixed(2))
+      : "нет данных";
   }
 
   if (listTotalPrice && pipeTotalPrice && fixTotalPrice) {
-    roofTotalPrice = listTotalPrice + pipeTotalPrice + fixTotalPrice;
+    roofTotalPrice = (+listTotalPrice + +pipeTotalPrice + +fixTotalPrice).toFixed(2);
   }
 
   return (
@@ -226,38 +231,24 @@ export const Calculator = () => {
             </label>
           </div>
           <div>
-            {getConfigWidth?.map((item) => (
-              <label key={item.id}>
-                Width
-                <input
-                  type="number"
-                  value={width}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setWidth(e.target.value)
-                  }
-                  step={item.step}
-                  min={item.min}
-                  max={item.max}
-                />
-              </label>
-            ))}
+            {getConfigWidth && (
+              <MyInput
+                name={"Width"}
+                data={getConfigWidth}
+                value={+width}
+                setValue={setWidth}
+              />
+            )}
           </div>
           <div>
-            {getConfigLength?.map((item) => (
-              <label key={item.id}>
-                Length
-                <input
-                  type="number"
-                  value={length}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setLength(e.target.value)
-                  }
-                  step={item.step}
-                  min={item.min}
-                  max={item.max}
-                />
-              </label>
-            ))}
+            {getConfigLength && (
+              <MyInput
+                name={"Length"}
+                data={getConfigLength}
+                value={+length}
+                setValue={setLength}
+              />
+            )}
           </div>
           <div>
             <label>
@@ -308,48 +299,38 @@ export const Calculator = () => {
         <div>
           <h3>Крыша</h3>
           <ul>
-            <li>
-              <div>
-                <p>Ширина крыши: {width ? width : "-"} м</p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <p>Длина крыши: {length ? length : "-"} м</p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <p>Конструкция крыши: {frame ? frame : "-"}</p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <p>Площадь крыши: {roofSquare ? roofSquare : "-"} м2</p>
-              </div>
-            </li>
+            <CartItem name={"Ширина крыши:"} option={width} unit={"м"} />
+            <CartItem name={"Длина крыши:"} option={length} unit={"м"} />
+            <CartItem name={"Конструкция крыши:"} option={frame} unit={""} />
+            <CartItem
+              name={"Площадь крыши:"}
+              option={roofSquare}
+              unit={" м2"}
+            />
           </ul>
         </div>
         <div>
           <h3>Лист</h3>
           <ul>
-            <li>
-              <div>
-                <p>Стандартная длина листа: {listLength} м</p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <p>Выбранная ширина листа: {listWidth ? listWidth : "-"} м</p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <p>
-                  Площадь выбранного листа: {listSquare ? listSquare : "-"} м2
-                </p>
-              </div>
-            </li>
+            <CartItem
+              name={"Стандартная длина листа:"}
+              option={listLength}
+              unit={"м"}
+            />
+            {listWidth && (
+              <CartItem
+                name={"Выбранная ширина листа:"}
+                option={listWidth}
+                unit={"м"}
+              />
+            )}
+            {listSquare && (
+              <CartItem
+                name={"Площадь выбранного листа:"}
+                option={listSquare}
+                unit={"м2"}
+              />
+            )}
             <li>
               <div>
                 <p>
@@ -358,105 +339,106 @@ export const Calculator = () => {
                 </p>
               </div>
             </li>
-            <li>
-              <div>
-                <p>
-                  Количество листов:
-                  {listQuantity ? listQuantity : "-"}
-                </p>
-              </div>
-            </li>
+            {listQuantity && (
+              <CartItem
+                name={"Количество листов:"}
+                option={listQuantity}
+                unit={"шт"}
+              />
+            )}
           </ul>
           <h3>Цена листа</h3>
           <ul>
-            <li>
-              <div>
-                <p>Цена 1 листа: {listPrice ? listPrice : "-"} BYN/шт</p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <p>
-                  Цена за всю площадь листа:{" "}
-                  {listTotalPrice ? listTotalPrice : "-"} BYN
-                </p>
-              </div>
-            </li>
+            {listPrice && (
+              <CartItem
+                name={"Цена 1 листа:"}
+                option={listPrice}
+                unit={"BYN/м2"}
+              />
+            )}
+            {listTotalPrice && (
+              <CartItem
+                name={"Цена за всю площадь листа:"}
+                option={listTotalPrice}
+                unit={"BYN"}
+              />
+            )}
           </ul>
         </div>
         <div>
           <h3>Труба</h3>
           <ul>
-            <li>
-              <div>
-                <p>Шаг трубы: {frameStep ? frameStep : "-"} м</p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <p>Сечение трубы: {pipeWidth ? pipeWidth : "-"} м</p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <p>Длина трубы: {pipeTotalLength ? pipeTotalLength : "-"} мп</p>
-              </div>
-            </li>
+            {frameStep && (
+              <CartItem name={"Шаг трубы:"} option={frameStep} unit={"м"} />
+            )}
+            {pipeWidth && (
+              <CartItem name={"Сечение трубы:"} option={pipeWidth} unit={"м"} />
+            )}
+            {pipeTotalLength && (
+              <CartItem
+                name={"Длина трубы:"}
+                option={pipeTotalLength}
+                unit={"мп"}
+              />
+            )}
           </ul>
           <h3>Цена трубы</h3>
           <ul>
-            <li>
-              <div>
-                <p>Цена 1мп трубы: {pipePrice ? pipePrice : "-"} BYN/мп</p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <p>
-                  Цена за всю длину трубы:{" "}
-                  {pipeTotalPrice ? pipeTotalPrice : "-"} BYN
-                </p>
-              </div>
-            </li>
+            {pipePrice && (
+              <CartItem
+                name={"Цена 1мп трубы:"}
+                option={pipePrice}
+                unit={"BYN/мп"}
+              />
+            )}
+            {pipeTotalPrice && (
+              <CartItem
+                name={"Цена за всю длину трубы:"}
+                option={pipeTotalPrice}
+                unit={"BYN"}
+              />
+            )}
           </ul>
         </div>
         <div>
           <h3>Крепеж</h3>
           <ul>
-            <li>
-              <div>
-                <p>
-                  Количество саморезов:{" "}
-                  {fixValueOnSquare ? fixValueOnSquare : "-"} шт
-                </p>
-              </div>
-            </li>
+            {fixValueOnSquare && (
+              <CartItem
+                name={"Количество саморезов:"}
+                option={fixValueOnSquare}
+                unit={"шт"}
+              />
+            )}
           </ul>
           <h3>Цена крепежа</h3>
           <ul>
-            <li>
-              <div>
-                <p>Цена 1шт самореза: {fixPrice ? fixPrice : "-"} BYN/шт</p>
-              </div>
-            </li>
-            <li>
-              <div>
-                <p>
-                  Цена за все саморезы: {fixTotalPrice ? fixTotalPrice : "-"}{" "}
-                  BYN
-                </p>
-              </div>
-            </li>
+            {fixPrice && (
+              <CartItem
+                name={"Цена 1шт самореза:"}
+                option={fixPrice}
+                unit={"BYN/шт"}
+              />
+            )}
+            {fixTotalPrice && (
+              <CartItem
+                name={"Цена за все саморезы:"}
+                option={fixTotalPrice}
+                unit={"BYN"}
+              />
+            )}
           </ul>
         </div>
         <div>
           <h3>Общая цена кровли</h3>
           <ul>
-            <li>
-              <div>
-                <p>Цена кровли: {roofTotalPrice ? roofTotalPrice : "-"} BYN</p>
-              </div>
-            </li>
+            {roofTotalPrice && (
+              <CartItem
+                name={"Цена кровли:"}
+                option={roofTotalPrice}
+                unit={"BYN"}
+              />
+            )}
           </ul>
         </div>
         <div className={s.cart__inner}></div>
