@@ -1,0 +1,28 @@
+.calc__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 50%;
+  height: 100%;
+  background: #cecdcd;
+}
+
+.calc__inner, .cart__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cart__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 50%;
+  height: 100%;
+  flex: 1 0 auto;
+  background: #659e24;
+}
+

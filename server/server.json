@@ -1,0 +1,190 @@
+{
+  "data": [
+  {
+    "type": "list",
+    "name": "Лист-1 0.5 ширина 1.8м",
+    "material": "plastic",
+    "unit": "м2",
+    "width": 1.8,
+    "price": 12
+  },
+  {
+    "type": "list",
+    "name": "Лист-2 0.5 ширина 1.5м",
+    "material": "plastic",
+    "unit": "м2",
+    "width": 1.5,
+    "price": 15
+  },
+  {
+    "type": "list",
+    "name": "Лист-3 0.5 ширина 1.2м",
+    "material": "plastic",
+    "unit": "м2",
+    "width": 1.2,
+    "price": 15
+  },
+  {
+    "type": "list",
+    "name": "Лист-4 0.7 ширина 1.8м",
+    "material": "plastic",
+    "unit": "м2",
+    "width": 1.8,
+    "price": 17
+  },
+  {
+    "type": "list",
+    "name": "Лист-5 0.7 ширина 1.5м",
+    "material": "plastic",
+    "unit": "м2",
+    "width": 1.5,
+    "price": 20
+  },
+  {
+    "type": "list",
+    "name": "Лист-6 0.7 ширина 1.2м",
+    "material": "plastic",
+    "unit": "м2",
+    "width": 1.2,
+    "price": 22
+  },
+
+  {
+    "type": "list",
+    "name": "Лист-7 0.3 ширина 1м",
+    "material": "metal",
+    "unit": "м2",
+    "width": 1,
+    "price": 25
+  },
+  {
+    "type": "list",
+    "name": "Лист-8 0.3 ширина 0.75м",
+    "material": "metal",
+    "unit": "м2",
+    "width": 0.75,
+    "price": 20
+  },
+  {
+    "type": "list",
+    "name": "Лист-9 0.3 ширина 0.5м",
+    "material": "metal",
+    "unit": "м2",
+    "width": 0.5,
+    "price": 15
+  },
+  {
+    "type": "list",
+    "name": "Лист-10 0.5 ширина 1м",
+    "material": "metal",
+    "unit": "м2",
+    "width": 1,
+    "price": 30
+  },
+  {
+    "type": "list",
+    "name": "Лист-11 0.5 ширина 0.75м",
+    "material": "metal",
+    "unit": "м2",
+    "width": 0.75,
+    "price": 26
+  },
+  {
+    "type": "list",
+    "name": "Лист-12 0.5 ширина 0.5м",
+    "material": "metal",
+    "unit": "м2",
+    "width": 0.5,
+    "price": 22
+  },
+
+  {
+    "type": "pipe",
+    "name": "Труба 20х20",
+    "unit": "мп",
+    "width": 20,
+    "price": 18
+  },
+  {
+    "type": "pipe",
+    "name": "Труба 30х30",
+    "unit": "мп",
+    "width": 30,
+    "price": 18
+  },
+
+  {
+    "type": "fix",
+    "name": "Саморез",
+    "unit": "шт",
+    "price": 1.1
+  }
+],
+  "config": [
+  {
+    "type": "size",
+    "key": "length",
+    "name": "Длина",
+    "min": 5,
+    "max": 50,
+    "step": 0.2,
+    "id": "6dd5"
+  },
+  {
+    "type": "size",
+    "key": "width",
+    "name": "Ширина",
+    "min": 5,
+    "max": 25,
+    "step": 0.2,
+    "id": "7c6d"
+  },
+  {
+    "type": "frame",
+    "key": "light",
+    "name": "Легкая",
+    "step": 1.2,
+    "id": "b0c0"
+  },
+  {
+    "type": "frame",
+    "key": "standard",
+    "name": "Стандартная",
+    "step": 1,
+    "id": "f068"
+  },
+  {
+    "type": "frame",
+    "key": "strong",
+    "name": "Усиленная",
+    "step": 0.8,
+    "id": "51be"
+  },
+  {
+    "type": "material",
+    "key": "metal",
+    "name": "Метал",
+    "id": "7807"
+  },
+  {
+    "type": "material",
+    "key": "plastic",
+    "name": "Пластик",
+    "id": "6f83"
+  },
+  {
+    "type": "fix",
+    "key": "plastic",
+    "name": "Штук на кв. метр для пластиковых листов",
+    "value": 10,
+    "id": "3c1c"
+  },
+  {
+    "type": "fix",
+    "key": "metal",
+    "name": "Штук на кв. метр для металлических листов",
+    "value": 5,
+    "id": "2fa0"
+  }
+]
+}
