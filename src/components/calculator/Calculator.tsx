@@ -4,7 +4,7 @@ import axios from "axios";
 import { MySelect } from '../ui/select/MySelect';
 import { MyCommonSelect } from '../ui/select/MyCommonSelect';
 
-type Data = {
+export type Data = {
   id: string;
   material?: string;
   name: string;
@@ -219,10 +219,12 @@ export const Calculator = () => {
       <div className={s.calc__wrapper}>
         <h2>Calculator</h2>
         <div className={s.calc__inner}>
-          <label>
-            Type
-            <MySelect val={type} data={getTypes} setValue={setType} />
-          </label>
+          <div>
+            <label>
+              Type
+              <MySelect val={type} data={getTypes} setValue={setType} />
+            </label>
+          </div>
           <div>
             {getConfigWidth?.map((item) => (
               <label key={item.id}>
@@ -260,60 +262,43 @@ export const Calculator = () => {
           <div>
             <label>
               Frame
-              {getConfigFrame && <MyCommonSelect val={frame} data={getConfigFrame} setValue={setFrame} type={type} optionType='pipe' />}
-              {/* <select
-                disabled={type !== "pipe"}
-                value={frame}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                  setFrame(e.target.value)
-                }
-              >
-                <option value="">Choose option</option>
-                {getConfigFrame &&
-                  getConfigFrame.map((item) => (
-                    <option key={item.id} value={item.name}>
-                      {item.name}
-                    </option>
-                  ))}
-              </select> */}
+              {getConfigFrame && (
+                <MyCommonSelect
+                  val={frame}
+                  data={getConfigFrame}
+                  setValue={setFrame}
+                  type={type}
+                  optionType="pipe"
+                />
+              )}
             </label>
           </div>
-
           <div>
             <label>
               Pipe type
-              <select
-                disabled={type !== "pipe"}
-                value={pipeType}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                  setPipeType(e.target.value)
-                }
-              >
-                <option value="">Choose option</option>
-                {getPipeList?.map((item) => (
-                  <option key={item.name} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
+              {getPipeList && (
+                <MyCommonSelect
+                  val={pipeType}
+                  data={getPipeList}
+                  setValue={setPipeType}
+                  type={type}
+                  optionType="pipe"
+                />
+              )}
             </label>
           </div>
-
           <div>
             <label>
               List type
-              <select
-                disabled={type !== "list"}
-                value={listType}
-                onChange={(e: any) => setListType(e.target.value)}
-              >
-                <option value="">Choose option</option>
-                {getListList?.map((item) => (
-                  <option key={item.name} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
+              {getListList && (
+                <MyCommonSelect
+                  val={listType}
+                  data={getListList}
+                  setValue={setListType}
+                  type={type}
+                  optionType="list"
+                />
+              )}
             </label>
           </div>
         </div>

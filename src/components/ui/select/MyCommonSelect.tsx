@@ -1,9 +1,9 @@
 import { ChangeEvent } from 'react'
-import { Config } from '../../calculator/Calculator';
+import { Config, Data } from '../../calculator/Calculator';
 
 type PropsType = {
   val: string | number;
-  data: Config[];
+  data: Config[] | Data[];
   setValue: (e: any) => void;
   type: string
   optionType: 'pipe' | 'list'
