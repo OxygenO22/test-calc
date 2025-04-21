@@ -1,5 +1,6 @@
 import { ChangeEvent } from 'react'
-import { Config, Data } from '../../calculator/Calculator';
+import { Config, Data } from '../../api/api';
+
 
 type PropsType = {
   val: string | number;

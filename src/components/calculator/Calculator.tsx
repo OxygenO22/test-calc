@@ -1,14 +1,19 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import s from './Calculator.module.scss'
-import axios from "axios";
 import { MySelect } from '../ui/select/MySelect';
 import { MyCommonSelect } from '../ui/select/MyCommonSelect';
 import { MyInput } from '../ui/input/MyInput';
 import { CartItem } from '../ui/cartItem/CartItem';
 import { Config, Data, dateApi } from '../api/api';
+
+enum TypeEnums {
+  list = "list",
+  pipe = "pipe",
+  fix = "fix",
+}
 export const Calculator = () => {
-  const [data, setData] = useState<Data[] | null>(null);
-  const [config, setConfig] = useState<Config[] | null>(null);
+  const [data, setData] = useState<Data[]>([]);
+  const [config, setConfig] = useState<Config[]>([]);
   const [type, setType] = useState('');
   const [width, setWidth] = useState(5);
   const [length, setLength] = useState(5);
@@ -54,17 +59,15 @@ export const Calculator = () => {
     ...new Set(data?.map((item) => item.type).filter(item => item !== 'fix')),
   ];
 
- 
+  const getTypeData = (type: string) => {
+    return data.filter((item) => item.type === type);
+  };
 
-  const getListList = data?.filter((item) => item.type === 'list');
-  const getPipeList = data?.filter((item) => item.type === 'pipe');
-  const getFixList = data?.filter((item) => item.type === 'fix');
-
-  const getCurrentListWidth = getListList
+  const getCurrentListWidth = getTypeData(TypeEnums.list)
     ?.filter((item) => item.name === listType)
     .map((item) => item.width);
 
-  const getCurrentListMaterial = getListList
+  const getCurrentListMaterial = getTypeData(TypeEnums.list)
     ?.filter((item) => item.name === listType)
     .map((item) => item.material);
 
@@ -79,7 +82,7 @@ export const Calculator = () => {
 
   listSquare ? (listQuantity = Math.ceil(roofSquare / listSquare)) : "нет данных";
 
-  const getCurrentPipeWidth = getPipeList
+  const getCurrentPipeWidth = getTypeData(TypeEnums.pipe)
     ?.filter((item) => item.name === pipeType)
     .map((item) => item.width);
   if (getCurrentPipeWidth) {
@@ -143,7 +146,7 @@ export const Calculator = () => {
 
   // Prices
 
-  const getCurrentListPrice = getListList
+  const getCurrentListPrice = getTypeData(TypeEnums.list)
     ?.filter((item) => item.name === listType)
     .map((item) => item.price);
 
@@ -159,7 +162,7 @@ export const Calculator = () => {
 
 
 
-  const getCurrentPipePrice = getPipeList
+  const getCurrentPipePrice = getTypeData(TypeEnums.pipe)
     ?.filter((item) => item.name === pipeType)
     .map((item) => item.price);
 
@@ -176,8 +179,7 @@ export const Calculator = () => {
   }
   
 
-  const getFixPrice = getFixList
-    ?.map((item) => item.price);
+  const getFixPrice = getTypeData(TypeEnums.fix)?.map((item) => item.price);
 
   if (getFixPrice) {
     const [price] = getFixPrice;
@@ -243,10 +245,10 @@ export const Calculator = () => {
           <div>
             <label>
               Pipe type
-              {getPipeList && (
+              {getTypeData(TypeEnums.pipe) && (
                 <MyCommonSelect
                   val={pipeType}
-                  data={getPipeList}
+                  data={getTypeData(TypeEnums.pipe)}
                   setValue={setPipeType}
                   type={type}
                   optionType="pipe"
@@ -257,10 +259,10 @@ export const Calculator = () => {
           <div>
             <label>
               List type
-              {getListList && (
+              {getTypeData(TypeEnums.list) && (
                 <MyCommonSelect
                   val={listType}
-                  data={getListList}
+                  data={getTypeData(TypeEnums.list)}
                   setValue={setListType}
                   type={type}
                   optionType="list"
