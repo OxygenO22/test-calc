@@ -5,33 +5,13 @@ import { MySelect } from '../ui/select/MySelect';
 import { MyCommonSelect } from '../ui/select/MyCommonSelect';
 import { MyInput } from '../ui/input/MyInput';
 import { CartItem } from '../ui/cartItem/CartItem';
-
-export type Data = {
-  id: string;
-  material?: string;
-  name: string;
-  price: number
-  type: string;
-  unit: string;
-  width?: number
-};
-
-export type Config = {
-  type: string;
-  key: string;
-  name: string;
-  min?: number;
-  max?: number;
-  step?: number;
-  id: string;
-  value?: number
-};
+import { Config, Data, dateApi } from '../api/api';
 export const Calculator = () => {
   const [data, setData] = useState<Data[] | null>(null);
   const [config, setConfig] = useState<Config[] | null>(null);
   const [type, setType] = useState('');
-  const [width, setWidth] = useState('');
-  const [length, setLength] = useState('');
+  const [width, setWidth] = useState(5);
+  const [length, setLength] = useState(5);
   const [frame, setFrame] = useState('');
   const [listType, setListType] = useState("");
   const [pipeType, setPipeType] = useState("");
@@ -64,12 +44,8 @@ export const Calculator = () => {
   
   
   useEffect(() => {
-    axios("http://localhost:3001/data").then((res) => {
-      setData(res.data)
-    });
-    axios("http://localhost:3001/config").then((res) => {
-      setConfig(res.data);
-    });
+    dateApi.getMaterials().then((res) => setData(res.data));
+    dateApi.getConfig().then((res) => setConfig(res.data));
   }, []);
 
   // Data
