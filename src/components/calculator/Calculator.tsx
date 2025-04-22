@@ -23,30 +23,17 @@ export const Calculator = () => {
   const listLength = 1;
   const roofSquare = Math.ceil(+width * +length);
   let listSquare;
-  let listWidth;
-  let listPrice;
   let listTotalPrice;
   let listQuantity;
-
-  let frameStep;
-
   let pipeWidth;
   let pipeQuantityByWidth;
   let pipeQuantityByLength;
   let pipeSumByWidth;
   let pipeSumByLength;
   let pipeTotalLength;
-  let pipePrice;
   let pipeTotalPrice;
-
-  let getConfigFixValue;
-  let fixValue;
-  let fixPrice;
-  let fixValueOnSquare;
   let fixTotalPrice;
-
   let roofTotalPrice;
-  
   
   useEffect(() => {
     dateApi.getMaterials().then((res) => setData(res.data));
@@ -59,73 +46,52 @@ export const Calculator = () => {
     ...new Set(data?.map((item) => item.type).filter(item => item !== 'fix')),
   ];
 
-  const getTypeData = (type: string) => {
+  const getTypeFromData = (type: string) => {
     return data.filter((item) => item.type === type);
   };
 
-  const getCurrentListWidth = getTypeData(TypeEnums.list)
-    ?.filter((item) => item.name === listType)
-    .map((item) => item.width);
+  const getCurrentListWidth = getTypeFromData(TypeEnums.list)
+    .filter((item) => item.name === listType)
+    .map((item) => item.width)[0];
 
-  const getCurrentListMaterial = getTypeData(TypeEnums.list)
-    ?.filter((item) => item.name === listType)
-    .map((item) => item.material);
+  const getCurrentListMaterial = getTypeFromData(TypeEnums.list)
+    .filter((item) => item.name === listType)
+    .map((item) => item.material)[0];
 
-  
-    
-
-  if (getCurrentListWidth) {
-    const [width] = getCurrentListWidth;
-    width ? listSquare = listLength * width : 'нет данных';
-    width ? (listWidth = width) : "нет данных";
-  }
+  getCurrentListWidth
+    ? (listSquare = listLength * getCurrentListWidth)
+    : "нет данных";
 
   listSquare ? (listQuantity = Math.ceil(roofSquare / listSquare)) : "нет данных";
 
-  const getCurrentPipeWidth = getTypeData(TypeEnums.pipe)
+  const getCurrentPipeWidth = getTypeFromData(TypeEnums.pipe)
     ?.filter((item) => item.name === pipeType)
-    .map((item) => item.width);
-  if (getCurrentPipeWidth) {
-    const [width] = getCurrentPipeWidth;
-    width ? pipeWidth = width / 1000 : "нет данных";
-  }
+    .map((item) => item.width)[0];
 
-  
+  getCurrentPipeWidth ? pipeWidth = getCurrentPipeWidth / 1000 : "нет данных";
+
+  console.log(getCurrentPipeWidth);
 
     // Config
 
-  const getConfigWidth = config?.filter((item) => item.key === "width");
-  const getConfigLength = config?.filter(item => item.key === 'length')
-  const getConfigFrame = config?.filter(item => item.type === 'frame')
+  const getConfigWidth = config.filter((item) => item.key === "width");
+  const getConfigLength = config.filter(item => item.key === 'length')
+  const getConfigFrame = config.filter(item => item.type === 'frame')
 
-  if (getCurrentListMaterial) {
-    const [material] = getCurrentListMaterial
-    getConfigFixValue = config?.filter(
-      (item) => item.type === "fix" && item.key === material
-    ).map((item) => item.value);
-  }
+  const getConfigFixValue = config
+      .filter(
+        (item) => item.type === "fix" && item.key === getCurrentListMaterial
+      )
+      .map((item) => item.value)[0]
 
-  if (getConfigFixValue) {
-    const [value] = getConfigFixValue;
-    value ? (fixValue = value) : "нет данных";
-  }
-
-  if (fixValue) {
-    fixValueOnSquare = roofSquare * fixValue;
-  }
-
-
-  const getFrameStep = config?.filter((item) => item.name === frame).map(item => item.step);
-  if (getFrameStep) {
-    const [step] = getFrameStep;
-    step ? frameStep = step : "нет данных";
-  }
+  const fixValueOnSquare = getConfigFixValue ? roofSquare * getConfigFixValue : "нет данных";
+  const getFrameStep = config.filter((item) => item.name === frame).map(item => item.step)[0];
 
   // Pipe length
 
-  if (width && listWidth && frameStep) {
+  if (width && getCurrentListWidth && getFrameStep) {
     pipeQuantityByWidth =
-      +listWidth <= +frameStep ? +width / +listWidth : +width / +frameStep;
+      +getCurrentListWidth <= +getFrameStep ? +width / +getCurrentListWidth : +width / +getFrameStep;
     pipeQuantityByWidth === Math.floor(pipeQuantityByWidth)
       ? (pipeSumByWidth = (pipeQuantityByWidth + 1) * +width)
       : (pipeSumByWidth = (Math.floor(pipeQuantityByWidth) + 2) * +width);
@@ -143,55 +109,28 @@ export const Calculator = () => {
     pipeTotalLength = (pipeSumByWidth + pipeSumByLength).toFixed(1);
   } 
 
-
   // Prices
-
-  const getCurrentListPrice = getTypeData(TypeEnums.list)
+  const getCurrentListPrice = getTypeFromData(TypeEnums.list)
     ?.filter((item) => item.name === listType)
-    .map((item) => item.price);
+    .map((item) => item.price)[0];
 
-  if (getCurrentListPrice) {
-    const [price] = getCurrentListPrice;
-    price ? (listPrice = price) : "нет данных";
-  }
+  getCurrentListPrice
+    ? (listTotalPrice = roofSquare * +getCurrentListPrice)
+    : "нет данных";
 
-  if (getCurrentListPrice && listPrice) {
-    const [price] = getCurrentListPrice;
-    price ? (listTotalPrice = roofSquare * +listPrice) : "нет данных";
-  }
-
-
-
-  const getCurrentPipePrice = getTypeData(TypeEnums.pipe)
+  const getCurrentPipePrice = getTypeFromData(TypeEnums.pipe)
     ?.filter((item) => item.name === pipeType)
-    .map((item) => item.price);
+    .map((item) => item.price)[0];
 
-  if (getCurrentPipePrice) {
-    const [price] = getCurrentPipePrice;
-    price ? (pipePrice = price) : "нет данных";
-  }
-
-  if (getCurrentPipePrice && pipePrice && pipeTotalLength) {
-    const [price] = getCurrentPipePrice;
-    price
-      ? (pipeTotalPrice = (+pipeTotalLength * +pipePrice).toFixed(2))
-      : "нет данных";
-  }
+  getCurrentPipePrice && pipeTotalLength
+    ? (pipeTotalPrice = (+pipeTotalLength * +getCurrentPipePrice).toFixed(2))
+    : "нет данных";
   
-
-  const getFixPrice = getTypeData(TypeEnums.fix)?.map((item) => item.price);
-
-  if (getFixPrice) {
-    const [price] = getFixPrice;
-    price ? (fixPrice = price) : "нет данных";
-  }
-
-  if (getCurrentPipePrice && fixPrice && fixValueOnSquare) {
-    const [price] = getCurrentPipePrice;
-    price
-      ? (fixTotalPrice = (+fixValueOnSquare * +fixPrice).toFixed(2))
-      : "нет данных";
-  }
+  const getFixPrice = getTypeFromData(TypeEnums.fix)?.map((item) => item.price)[0];
+  
+  getCurrentPipePrice && getFixPrice
+    ? (fixTotalPrice = (+fixValueOnSquare * +getFixPrice).toFixed(2))
+    : "нет данных";
 
   if (listTotalPrice && pipeTotalPrice && fixTotalPrice) {
     roofTotalPrice = (+listTotalPrice + +pipeTotalPrice + +fixTotalPrice).toFixed(2);
@@ -245,10 +184,10 @@ export const Calculator = () => {
           <div>
             <label>
               Pipe type
-              {getTypeData(TypeEnums.pipe) && (
+              {getTypeFromData(TypeEnums.pipe) && (
                 <MyCommonSelect
                   val={pipeType}
-                  data={getTypeData(TypeEnums.pipe)}
+                  data={getTypeFromData(TypeEnums.pipe)}
                   setValue={setPipeType}
                   type={type}
                   optionType="pipe"
@@ -259,10 +198,10 @@ export const Calculator = () => {
           <div>
             <label>
               List type
-              {getTypeData(TypeEnums.list) && (
+              {getTypeFromData(TypeEnums.list) && (
                 <MyCommonSelect
                   val={listType}
-                  data={getTypeData(TypeEnums.list)}
+                  data={getTypeFromData(TypeEnums.list)}
                   setValue={setListType}
                   type={type}
                   optionType="list"
@@ -295,10 +234,10 @@ export const Calculator = () => {
               option={listLength}
               unit={"м"}
             />
-            {listWidth && (
+            {getCurrentListWidth && (
               <CartItem
                 name={"Выбранная ширина листа:"}
-                option={listWidth}
+                option={getCurrentListWidth}
                 unit={"м"}
               />
             )}
@@ -327,10 +266,10 @@ export const Calculator = () => {
           </ul>
           <h3>Цена листа</h3>
           <ul>
-            {listPrice && (
+            {getCurrentListPrice && (
               <CartItem
                 name={"Цена 1 листа:"}
-                option={listPrice}
+                option={getCurrentListPrice}
                 unit={"BYN/м2"}
               />
             )}
@@ -346,8 +285,8 @@ export const Calculator = () => {
         <div>
           <h3>Труба</h3>
           <ul>
-            {frameStep && (
-              <CartItem name={"Шаг трубы:"} option={frameStep} unit={"м"} />
+            {getFrameStep && (
+              <CartItem name={"Шаг трубы:"} option={getFrameStep} unit={"м"} />
             )}
             {pipeWidth && (
               <CartItem name={"Сечение трубы:"} option={pipeWidth} unit={"м"} />
@@ -362,10 +301,10 @@ export const Calculator = () => {
           </ul>
           <h3>Цена трубы</h3>
           <ul>
-            {pipePrice && (
+            {getCurrentPipePrice && (
               <CartItem
                 name={"Цена 1мп трубы:"}
-                option={pipePrice}
+                option={getCurrentPipePrice}
                 unit={"BYN/мп"}
               />
             )}
@@ -391,10 +330,10 @@ export const Calculator = () => {
           </ul>
           <h3>Цена крепежа</h3>
           <ul>
-            {fixPrice && (
+            {getFixPrice && (
               <CartItem
                 name={"Цена 1шт самореза:"}
-                option={fixPrice}
+                option={getFixPrice}
                 unit={"BYN/шт"}
               />
             )}
