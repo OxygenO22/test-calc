@@ -1,14 +1,15 @@
 
 type PropsType = {
+  key?: number
   name: string
   option: string | number;
   unit: string
 }
 
 export const CartItem = (props: PropsType) => {
-  const { name, option, unit } = props;
+  const { key, name, option, unit } = props;
   return (
-    <li>
+    <li key={key}>
       <div>
         <p>
           {name} {option ? option : "-"} {unit}

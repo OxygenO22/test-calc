@@ -15,13 +15,13 @@ export const Calculator = () => {
   const [data, setData] = useState<Data[]>([]);
   const [config, setConfig] = useState<Config[]>([]);
   const [type, setType] = useState('');
-  const [width, setWidth] = useState(5);
-  const [length, setLength] = useState(5);
+  const [width, setWidth] = useState<number>(5);
+  const [length, setLength] = useState<number>(5);
   const [frame, setFrame] = useState('');
   const [listType, setListType] = useState("");
   const [pipeType, setPipeType] = useState("");
   const listLength = 1;
-  const roofSquare = Math.ceil(+width * +length);
+  const roofSquare = Math.ceil(width * length);
   let listSquare;
   let listTotalPrice;
   let listQuantity;
@@ -91,18 +91,18 @@ export const Calculator = () => {
 
   if (width && getCurrentListWidth && getFrameStep) {
     pipeQuantityByWidth =
-      +getCurrentListWidth <= +getFrameStep ? +width / +getCurrentListWidth : +width / +getFrameStep;
+      +getCurrentListWidth <= +getFrameStep ? width / +getCurrentListWidth : width / +getFrameStep;
     pipeQuantityByWidth === Math.floor(pipeQuantityByWidth)
-      ? (pipeSumByWidth = (pipeQuantityByWidth + 1) * +width)
-      : (pipeSumByWidth = (Math.floor(pipeQuantityByWidth) + 2) * +width);
+      ? (pipeSumByWidth = (pipeQuantityByWidth + 1) * width)
+      : (pipeSumByWidth = (Math.floor(pipeQuantityByWidth) + 2) * width);
   } 
 
   if (length && listLength) {
-    pipeQuantityByLength = +length / +listLength;
+    pipeQuantityByLength = length / +listLength;
     pipeQuantityByLength === Math.floor(pipeQuantityByLength)
-      ? (pipeSumByLength = (pipeQuantityByLength + 1) * +length)
+      ? (pipeSumByLength = (pipeQuantityByLength + 1) * length)
       : (pipeSumByLength =
-          (Math.floor(pipeQuantityByLength) + 2) * +length);
+          (Math.floor(pipeQuantityByLength) + 2) * length);
   } 
 
   if (pipeSumByWidth && pipeSumByLength) {
@@ -136,6 +136,36 @@ export const Calculator = () => {
     roofTotalPrice = (+listTotalPrice + +pipeTotalPrice + +fixTotalPrice).toFixed(2);
   }
 
+  const cartRoof = [
+    {id: 1, name: 'Ширина крыши:', option: width, unit: 'м'},
+    {id: 2, name: 'Длина крыши:', option: length, unit: 'м'},
+    {id: 3, name: 'Конструкция крыши:', option: frame, unit: ''},
+    {id: 4, name: 'Площадь крыши:', option: roofSquare, unit: 'м2'},
+  ];
+
+  const cartList = [
+    { id: 1, name: "Стандартная длина листа:", option: listLength, unit: "м" },
+    {
+      id: 2,
+      name: "Выбранная ширина листа:",
+      option: getCurrentListWidth,
+      unit: "м",
+    },
+    {
+      id: 3,
+      name: "Площадь выбранного листа:",
+      option: listSquare,
+      unit: "м2",
+    },
+    {
+      id: 4,
+      name: "Материал выбранного листа:",
+      option: getCurrentListMaterial,
+      unit: "",
+    },
+    { id: 5, name: "Количество листов:", option: listQuantity, unit: "шт" },
+  ];
+
   return (
     <>
       <div className={s.calc__wrapper}>
@@ -152,7 +182,7 @@ export const Calculator = () => {
               <MyInput
                 name={"Width"}
                 data={getConfigWidth}
-                value={+width}
+                value={width}
                 setValue={setWidth}
               />
             )}
@@ -162,7 +192,7 @@ export const Calculator = () => {
               <MyInput
                 name={"Length"}
                 data={getConfigLength}
-                value={+length}
+                value={length}
                 setValue={setLength}
               />
             )}
@@ -216,53 +246,28 @@ export const Calculator = () => {
         <div>
           <h3>Крыша</h3>
           <ul>
-            <CartItem name={"Ширина крыши:"} option={width} unit={"м"} />
-            <CartItem name={"Длина крыши:"} option={length} unit={"м"} />
-            <CartItem name={"Конструкция крыши:"} option={frame} unit={""} />
-            <CartItem
-              name={"Площадь крыши:"}
-              option={roofSquare}
-              unit={" м2"}
-            />
+            {cartRoof.map((item) => (
+              <CartItem
+                key={item.id}
+                name={item.name}
+                option={item.option}
+                unit={item.unit}
+              />
+            ))}
           </ul>
         </div>
         <div>
           <h3>Лист</h3>
           <ul>
-            <CartItem
-              name={"Стандартная длина листа:"}
-              option={listLength}
-              unit={"м"}
-            />
-            {getCurrentListWidth && (
+            {cartList.map((item) => (
+              item.option &&
               <CartItem
-                name={"Выбранная ширина листа:"}
-                option={getCurrentListWidth}
-                unit={"м"}
+                key={item.id}
+                name={item.name}
+                option={item.option}
+                unit={item.unit}
               />
-            )}
-            {listSquare && (
-              <CartItem
-                name={"Площадь выбранного листа:"}
-                option={listSquare}
-                unit={"м2"}
-              />
-            )}
-            <li>
-              <div>
-                <p>
-                  Материал выбранного листа:
-                  {getCurrentListMaterial ? getCurrentListMaterial : "-"}
-                </p>
-              </div>
-            </li>
-            {listQuantity && (
-              <CartItem
-                name={"Количество листов:"}
-                option={listQuantity}
-                unit={"шт"}
-              />
-            )}
+            ))}
           </ul>
           <h3>Цена листа</h3>
           <ul>
